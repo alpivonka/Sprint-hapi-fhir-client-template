@@ -1,0 +1,49 @@
+@startuml
+title Version-Adaptive Spring + HAPI FHIR Client — Search Flow
+
+actor Caller
+participant "FhirSearchService" as Service
+participant "VersionAdaptiveClientFactory" as Factory
+participant "OAuth2AccessTokenProvider" as OAuth
+participant "HAPI IGenericClient" as Hapi
+participant "FHIR Server" as Server
+participant "ResilientExecutor" as Retry
+participant "SearchPager" as Pager
+
+Caller -> Service: run(searchName, vars)
+Service -> Factory: create()
+Factory -> OAuth: getAccessToken()
+OAuth --> Factory: Bearer token (optional)
+
+Factory -> Server: GET /metadata (Bearer?)
+Server --> Factory: CapabilityStatement (fhirVersion)
+
+Factory -> Factory: choose FhirContext (R4/R4B/R5)\ncreate IGenericClient\nregister interceptors
+Factory -> Retry: run("capabilities", () -> client.capabilities().execute())
+Retry -> Hapi: capabilities().execute()
+Hapi -> Server: GET /metadata (FHIR-aware)
+Server --> Hapi: CapabilityStatement
+Hapi --> Retry: CapabilityStatement
+Retry --> Factory: CapabilityStatement
+Factory --> Service: VersionedClient(ctx, client, capability, release)
+
+Service -> Service: load YAML search def\nvalidate against CapabilityStatement
+Service -> Hapi: build IQuery from YAML
+Service -> Retry: run("search-exec", () -> q.execute())
+Retry -> Hapi: execute()
+Hapi -> Server: GET /{resource}?{params}
+Server --> Hapi: Bundle page 1
+Hapi --> Retry: Bundle
+Retry --> Service: Bundle
+
+== Optional paging ==
+Service -> Pager: forEach(page1, client, consumer)
+Pager -> Hapi: loadPage().byUrl(next).execute()
+Hapi -> Server: GET next url
+Server --> Hapi: Bundle page N
+Hapi --> Pager: Bundle page N
+Pager --> Service: each page to consumer
+
+Service --> Caller: Bundle (or aggregated results)
+
+@enduml

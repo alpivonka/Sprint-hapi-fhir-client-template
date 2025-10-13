@@ -1,0 +1,35 @@
+pkg: "core" # just a label
+searches:
+  patients-by-identifier:
+    resource: "Patient"
+    path: "/Patient"
+    params:
+      identifier: "${system}|${value}"
+    count: 25
+    summary: "data"
+    elements: ["id","name","identifier"]
+    sort: ["-lastUpdated"]
+    includes: []
+    revIncludes: []
+
+  observations-by-codes-since:
+    resource: "Observation"
+    path: "/Observation"
+    params:
+      code: "${codes}"         # e.g. "http://loinc.org|8480-6,http://loinc.org|8462-4"
+      date: "ge${since}"       # e.g. "2024-01-01"
+      subject: "Patient/${patientId}"
+    count: 100
+    summary: "data"
+    sort: ["-date"]
+    includes: ["Observation:subject","Observation:performer"]
+    revIncludes: []
+
+  patient-cohort-loinc-72166-2:
+    resource: "Patient"
+    path: "/Patient"
+    params:
+      _has:Observation:subject:code: "http://loinc.org|72166-2"
+    elements: ["id","address"]
+   # summary: "count"
+    count: 200

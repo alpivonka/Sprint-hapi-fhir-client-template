@@ -1,0 +1,50 @@
+spring:
+  main:
+    web-application-type: none
+
+
+# write *everything* to a single file
+logging:
+  file:
+    name: logs/app.log        # relative to project dir (or use an absolute path)
+  level:
+    com.example.fhirclient: INFO
+    # turn this on to ensure the raw URL lines show up:
+    com.example.fhirclient.interceptors.RawUrlLoggerIntc: INFO
+
+
+fhir:
+  base-url: https://hapi.fhir.org/baseR4        # WireMock or real server
+  connect-timeout-ms: 5000
+  socket-timeout-ms: 15000
+
+security:
+  oauth2:
+    enabled: false
+    provider: local
+    token-uri: https://idp.example.com/realms/acme/protocol/openid-connect/token
+    client-id: my-client
+    client-secret: ${OAUTH_CLIENT_SECRET:changeme}
+    scope: "system/*.read"
+
+interceptors:
+  logging:
+    enabled: true
+    log-request-body: false
+    log-response-body: false
+  request-id:
+    enabled: true
+    header-name: X-Request-Id
+  timing:
+    enabled: true
+  raw-url:
+    enabled: true     # <-- this turns on the RawUrlLoggerIntc bean
+
+search:
+  packs: classpath:searches/core.searches.yml  #if multiple, use comma delimited list
+
+
+retry:
+  enabled: true
+  max-attempts: 3
+  backoff-ms: 300
