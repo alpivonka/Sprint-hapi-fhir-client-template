@@ -1,6 +1,6 @@
 spring:
   main:
-    web-application-type: none
+    web-application-type: none  #'none' for simple applicication, 'servlet' for spring boot.
 
 
 # write *everything* to a single file
@@ -11,7 +11,6 @@ logging:
     com.example.fhirclient: INFO
     # turn this on to ensure the raw URL lines show up:
     com.example.fhirclient.interceptors.RawUrlLoggerIntc: INFO
-
 
 fhir:
   base-url: https://hapi.fhir.org/baseR4        # WireMock or real server
