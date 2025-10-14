@@ -22,7 +22,7 @@ public class FhirSearchService {
   private final QueryBuilder builder;
   private final ResilientExecutor resilient;
 
-  @Value("#{'${search.packs}'.split(',')}")
+  @Value("#{'${fhir-search-ymls.packs}'.split(',')}")
   private java.util.List<String> locations;
 
   private volatile Map<String,SearchDef> cache;
