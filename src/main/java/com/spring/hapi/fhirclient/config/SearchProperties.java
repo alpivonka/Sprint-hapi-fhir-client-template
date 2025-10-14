@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-@ConfigurationProperties(prefix = "search")
+@ConfigurationProperties(prefix = "fhir-search-ymls")
 public class SearchProperties {
     private List<String> packs = new ArrayList<>();
 

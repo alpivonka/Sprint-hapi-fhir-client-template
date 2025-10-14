@@ -12,7 +12,7 @@ logging:
     # turn this on to ensure the raw URL lines show up:
     com.example.fhirclient.interceptors.RawUrlLoggerIntc: INFO
 
-fhir:
+fhir-server:
   base-url: https://hapi.fhir.org/baseR4        # WireMock or real server
   connect-timeout-ms: 5000
   socket-timeout-ms: 15000
@@ -39,7 +39,7 @@ interceptors:
   raw-url:
     enabled: true     # <-- this turns on the RawUrlLoggerIntc bean
 
-search:
+fhir-search-ymls:
   packs: classpath:searches/core.searches.yml  #if multiple, use comma delimited list
 
 

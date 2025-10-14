@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "fhir")
+@ConfigurationProperties(prefix = "fhir-server")
 public class FhirClientProperties {
   private String baseUrl;
   private int connectTimeoutMs = 5000;
