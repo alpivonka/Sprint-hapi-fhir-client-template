@@ -54,7 +54,7 @@ public class VersionAdaptiveClientFactory {
    * @throws org.springframework.web.client.RestClientException on /metadata failure
    */
   public VersionedClient create() {
-    String base = props.getBaseUrl().replaceAll("/+$","");
+    String base = props.baseUrl().replaceAll("/+$","");
     String metaUrl = base + "/metadata";
 
     HttpHeaders headers = new HttpHeaders();
@@ -74,8 +74,8 @@ public class VersionAdaptiveClientFactory {
       case R4B -> FhirContext.forR4B();
       case R5 -> FhirContext.forR5();
     };
-    ctx.getRestfulClientFactory().setConnectTimeout(props.getConnectTimeoutMs());
-    ctx.getRestfulClientFactory().setSocketTimeout(props.getSocketTimeoutMs());
+    ctx.getRestfulClientFactory().setConnectTimeout(props.connectTimeoutMs());
+    ctx.getRestfulClientFactory().setSocketTimeout(props.socketTimeoutMs());
 
     IGenericClient client = ctx.newRestfulGenericClient(base);
     tokenProvider.install(client);

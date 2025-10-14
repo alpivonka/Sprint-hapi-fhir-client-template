@@ -30,7 +30,7 @@ public class OAuth2AccessTokenProvider {
   }
 
   public Optional<String> getAccessToken() {
-    if (!props.isEnabled()) return Optional.empty();
+    if (!props.enabled()) return Optional.empty();
     if (tokenValue == null || Instant.now().isAfter(expiresAt.minusSeconds(60))) {
       fetchToken();
     }
@@ -38,7 +38,7 @@ public class OAuth2AccessTokenProvider {
   }
 
   private synchronized void fetchToken() {
-    if (!props.isEnabled()) return;
+    if (!props.enabled()) return;
     if (tokenValue != null && Instant.now().isBefore(expiresAt.minusSeconds(60))) return;
 
     HttpHeaders headers = new HttpHeaders();
@@ -46,12 +46,12 @@ public class OAuth2AccessTokenProvider {
 
     MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
     form.add("grant_type", "client_credentials");
-    if (props.getScope()!=null && !props.getScope().isBlank()) form.add("scope", props.getScope());
-    form.add("client_id", props.getClientId());
-    form.add("client_secret", props.getClientSecret());
+    if (props.scope()!=null && !props.scope().isBlank()) form.add("scope", props.scope());
+    form.add("client_id", props.clientId());
+    form.add("client_secret", props.clientSecret());
 
     HttpEntity<MultiValueMap<String, String>> req = new HttpEntity<>(form, headers);
-    ResponseEntity<Map> resp = rest.postForEntity(props.getTokenUri(), req, Map.class);
+    ResponseEntity<Map> resp = rest.postForEntity(props.tokenUri(), req, Map.class);
     Map body = resp.getBody();
     if (body == null) throw new IllegalStateException("Empty token response");
     Object at = body.get("access_token");
@@ -66,7 +66,7 @@ public class OAuth2AccessTokenProvider {
   }
 
   public void install(ca.uhn.fhir.rest.client.api.IGenericClient client) {
-    if (!props.isEnabled()) return;
+    if (!props.enabled()) return;
     client.registerInterceptor(new IClientInterceptor() {
       @Override public void interceptRequest(IHttpRequest theRequest) {
         getAccessToken().ifPresent(tok -> theRequest.addHeader("Authorization", "Bearer " + tok));
