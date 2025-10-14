@@ -14,7 +14,24 @@ import java.util.Map;
 
 @Component
 public class QueryBuilder {
-
+  /**
+   * Builds HAPI FHIR search queries from YAML-defined {@link SearchDef}s.
+   *
+   * <p>Responsibilities:</p>
+   * <ul>
+   *   <li> Variable substitution for {@code ${var}} placeholders</li>
+   *   <li>Parameter maping:
+   *     <ul>
+   *       <li>Token-like values {@code system|code} → {@link TokenClientParam}</li>
+   *       <li>Other values → {@link StringClientParam}</li>
+   *     </ul>
+   *   </li>
+   *   <li>Applying elements, includes/revIncludes, sort, summary, and count</li>
+   *   <li>removal of any and all escapes: {@code "\|"} → {@code "|"}, {@code "\,"} → {@code ","}</li>
+   * </ul>
+   *
+   * Thread safe: stateless.
+   */
   public IQuery<Bundle> build(IGenericClient client, Map<String, Object> vars, SearchDef def) {
     IQuery<IBaseBundle> q = client.search().forResource(def.getResource());
 

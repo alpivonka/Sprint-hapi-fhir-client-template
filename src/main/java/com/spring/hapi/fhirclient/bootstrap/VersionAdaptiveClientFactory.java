@@ -17,11 +17,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This factory will produce FHIR versioned resources based on what is found out
- * when the /metadata call returns for the FHIR server in which the application is
- * exeucting searches against.
- *
- * This is dependent upon Srping RestTesmplate and not any specific version of FHIR to obtain the /metadata response.
+ * Builds a HAPI FHIR client configured for the server's FHIR release (R4/R4B/R5).
+ * <p>Detects release via GET {baseUrl}/metadata, then creates a matching FhirContext/client,
+ * installs OAuth/interceptors, and fetches the CapabilityStatement.</p>
  */
 @Component
 public class VersionAdaptiveClientFactory {
@@ -40,7 +38,21 @@ public class VersionAdaptiveClientFactory {
     this.interceptors = interceptors;
     this.resilient = resilient;
   }
-
+  /**
+   * Create a client adapted to the server's FHIR version.
+   *
+   * <p>Steps:</p>
+   * <ol>
+   *   <li>GET {baseUrl}/metadata (JSON)</li>
+   *   <li>Map fhirVersion → {@link FhirRelease}</li>
+   *   <li>Build {@link FhirContext} and {@link IGenericClient}</li>
+   *   <li>Install OAuth and custom interceptors</li>
+   *   <li>Fetch {@link CapabilityStatement}</li>
+   * </ol>
+   *
+   * @return versioned client (context, generic client, capability statement, release)
+   * @throws org.springframework.web.client.RestClientException on /metadata failure
+   */
   public VersionedClient create() {
     String base = props.getBaseUrl().replaceAll("/+$","");
     String metaUrl = base + "/metadata";
@@ -72,7 +84,13 @@ public class VersionAdaptiveClientFactory {
     CapabilityStatement capability = resilient.run("capabilities", () -> client.capabilities().ofType(CapabilityStatement.class).execute());
     return new VersionedClient(ctx, client, capability, release);
   }
-
+  /**
+   * Map raw version (e.g. "4.0.1", "4.3.x", "5.0.x") to {@link FhirRelease}.
+   * Defaults to R4 for unknown/blank.
+   *
+   * @param raw raw fhirVersion from CapabilityStatement (may be null)
+   * @return release enum
+   */
   private FhirRelease normalize(String raw) {
     if (raw == null) return FhirRelease.R4;
     String s = raw.toLowerCase();

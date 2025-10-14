@@ -2,7 +2,9 @@ package com.spring.hapi.fhirclient.search;
 
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * Container for a YAML search pack (one {@code *.searches.yml} file).
+ */
 public class SearchPack {
   private String pkg;
   private Map<String, SearchDef> searches = new HashMap<>();

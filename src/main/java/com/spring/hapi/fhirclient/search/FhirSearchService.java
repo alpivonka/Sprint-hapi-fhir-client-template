@@ -14,7 +14,20 @@ import jakarta.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-
+/**
+ * Executes named FHIR searches defined in YAML packs.
+ *
+ * <p>On startup this service loads all configured YAML "search packs" into an in-memory cache
+ * (name → {@link SearchDef}). At runtime it:
+ * <ol>
+ *   <li>Creates a version-adaptive HAPI client via {@link VersionAdaptiveClientFactory}.</li>
+ *   <li>Builds a search query from the cached {@link SearchDef} using {@link QueryBuilder}
+ *       (templating variables, params, elements, includes, sorting, etc.).</li>
+ *   <li>Executes the query with {@link ResilientExecutor} and returns a {@link org.hl7.fhir.r4.model.Bundle}.</li>
+ * </ol>
+ *
+ * <p>Thread-safety: the cache is populated once at init and then treated as read-only.</p>
+ */
 @Service
 public class FhirSearchService {
   private final VersionAdaptiveClientFactory factory;

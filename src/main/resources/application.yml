@@ -43,7 +43,7 @@ fhir-search-ymls:
   packs: classpath:searches/core.searches.yml  #if multiple, use comma delimited list
 
 
-retry:
+FHIR-request-retry:
   enabled: true
   max-attempts: 3
   backoff-ms: 300

@@ -2,9 +2,17 @@ package com.spring.hapi.fhirclient.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-
+/**
+ * Retry settings bound from application properties with prefix {@code FHIR-request-retry}.
+ *
+ * Example (application.yml):
+ * FHIR-request-retry:
+ *   enabled: true
+ *   max-attempts: 3
+ *   backoff-ms: 200
+ */
 @Configuration
-@ConfigurationProperties(prefix = "retry")
+@ConfigurationProperties(prefix = "FHIR-request-retry")
 public class RetryProperties {
   private boolean enabled = true;
   private int maxAttempts = 3;
