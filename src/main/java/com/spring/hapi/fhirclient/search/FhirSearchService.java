@@ -56,7 +56,7 @@ public class FhirSearchService {
 
   @PostConstruct
   void init() {
-    java.util.List<String> locs = searchProps.getPacks();
+    java.util.List<String> locs = searchProps.packs();
     if (locs == null || locs.isEmpty()) {
       locs = java.util.List.of("classpath:searches/core.searches.yml");
     }
