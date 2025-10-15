@@ -1,3 +1,10 @@
+app:
+  demo:
+    enabled: false #mvn --% spring-boot:run -Dspring-boot.run.arguments=" --app.demo.enabled=true"
+  verify:
+    enabled: false #mvn --% spring-boot:run -Dspring-boot.run.arguments=" --app.verify.enabled=true"
+
+
 spring:
   main:
     web-application-type: none  #'none' for simple applicication, 'servlet' for spring boot.
@@ -43,7 +50,12 @@ fhir-search-ymls:
   packs: classpath:searches/core.searches.yml  #if multiple, use comma delimited list
 
 
-FHIR-request-retry:
+fhir-request-retry:
   enabled: true
   max-attempts: 3
   backoff-ms: 300
+
+# picks up via System.getProperty if present, but you can also do:
+hapi:
+  caching:
+    provider: caffeine

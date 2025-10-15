@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  *   backoff-ms: 200
  */
 @Configuration
-@ConfigurationProperties(prefix = "FHIR-request-retry")
+@ConfigurationProperties(prefix = "fhir-request-retry")
 public class RetryProperties {
   private boolean enabled = true;
   private int maxAttempts = 3;
