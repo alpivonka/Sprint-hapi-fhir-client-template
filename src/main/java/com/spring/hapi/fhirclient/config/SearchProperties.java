@@ -1,7 +1,9 @@
 package com.spring.hapi.fhirclient.config;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +17,6 @@ import java.util.List;
  * fhir-search-ymls:
  *   packs: classpath:searches/core.searches.yml, classpath:searches/custom.searches.yml #if multiple, use comma delimited list
  */
-@Configuration
+@Validated
 @ConfigurationProperties(prefix = "fhir-search-ymls")
-public class SearchProperties {
-    private List<String> packs = new ArrayList<>();
-
-    public List<String> getPacks() { return packs; }
-    public void setPacks(List<String> packs) { this.packs = packs; }
-}
+public record SearchProperties(@NotNull List<String> packs) {}

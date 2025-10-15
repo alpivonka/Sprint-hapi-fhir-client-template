@@ -17,14 +17,14 @@ public class ResilientExecutor {
   public ResilientExecutor(RetryProperties props) {
     this.props = props;
     RetryConfig config = RetryConfig.custom()
-        .maxAttempts(props.getMaxAttempts())
-        .waitDuration(Duration.ofMillis(props.getBackoffMs()))
+        .maxAttempts(props.maxAttempts())
+        .waitDuration(Duration.ofMillis(props.backoffMs()))
         .build();
     this.registry = RetryRegistry.of(config);
   }
 
   public <T> T run(String name, Supplier<T> supplier) {
-    if (!props.isEnabled()) return supplier.get();
+    if (!props.enabled()) return supplier.get();
     Retry retry = registry.retry(name);
     Supplier<T> decorated = Retry.decorateSupplier(retry, supplier);
     return decorated.get();
