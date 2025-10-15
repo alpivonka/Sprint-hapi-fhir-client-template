@@ -37,9 +37,9 @@ public class FhirSearchYamlVerifier {
         var release = vc.release();
 
         // Load searches
-        List<String> locations = (searchProps == null || searchProps.getPacks() == null || searchProps.getPacks().isEmpty())
+        List<String> locations = (searchProps == null || searchProps.packs() == null || searchProps.packs().isEmpty())
                 ? List.of("classpath:searches/core.searches.yml")
-                : searchProps.getPacks();
+                : searchProps.packs();
         Map<String, SearchDef> all = yamlRepo.loadAll(locations);
         if (all == null || all.isEmpty()) {
             LOG.warn("No YAML search definitions found at: {}", locations);

@@ -1,7 +1,10 @@
 package com.spring.hapi.fhirclient.config;
 
+import jakarta.validation.constraints.Positive;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.validation.annotation.Validated;
+
 /**
  * Retry settings bound from application properties with prefix {@code FHIR-request-retry}.
  *
@@ -11,17 +14,6 @@ import org.springframework.context.annotation.Configuration;
  *   max-attempts: 3
  *   backoff-ms: 200
  */
-@Configuration
+@Validated
 @ConfigurationProperties(prefix = "fhir-request-retry")
-public class RetryProperties {
-  private boolean enabled = true;
-  private int maxAttempts = 3;
-  private long backoffMs = 200;
-
-  public boolean isEnabled() { return enabled; }
-  public void setEnabled(boolean enabled) { this.enabled = enabled; }
-  public int getMaxAttempts() { return maxAttempts; }
-  public void setMaxAttempts(int maxAttempts) { this.maxAttempts = maxAttempts; }
-  public long getBackoffMs() { return backoffMs; }
-  public void setBackoffMs(long backoffMs) { this.backoffMs = backoffMs; }
-}
+public record RetryProperties (boolean enabled, @Positive int maxAttempts, @Positive long backoffMs ){}
