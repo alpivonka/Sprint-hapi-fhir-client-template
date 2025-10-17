@@ -75,7 +75,7 @@ public class FhirSearchYamlVerifier {
                     if (p.startsWith("_")) continue;
                     boolean ok = rs.params.contains(p);
                     allOk &= ok;
-                    LOG.info("  Param   {:<40} {}", p, ok ? "✅" : "❌");
+                    LOG.info("  Param   {} {}", String.format("%-40s", p), ok ? "✅" : "❌");
                 }
                 if (allOk) LOG.info("Params: ✅ supported");
             }
@@ -87,7 +87,7 @@ public class FhirSearchYamlVerifier {
             } else {
                 for (String inc : includes) {
                     boolean ok = rs.includes.contains(inc);
-                    LOG.info("  Include {:<40} {}", inc, ok ? "✅" : "❌");
+                    LOG.info("  Param   {} {}", String.format("%-40s", inc), ok ? "✅" : "❌");
                 }
             }
 
@@ -98,7 +98,7 @@ public class FhirSearchYamlVerifier {
             } else {
                 for (String rev : revIncludes) {
                     boolean ok = rs.revIncludes.contains(rev);
-                    LOG.info("  RevInclude {:<37} {}", rev, ok ? "✅" : "❌");
+                    LOG.info("  RevInclude {} {}", String.format("%-37s", rev), ok ? "✅" : "❌");
                 }
             }
 
